@@ -8,5 +8,6 @@ go 语言数组
 import "fmt"
 
 func main() {
+	fmt.Println('a')
 	fmt.Println("dd")
 }
