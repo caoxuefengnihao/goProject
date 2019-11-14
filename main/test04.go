@@ -31,9 +31,36 @@ go语言map
 声明方式
 var mapname map[keyType]valueType
 map 的删除和清空 delete（map，键）方法
+在go语言中并没有为map提供任何清空所有元素的函数方法 清空map的唯一办法就是
+重新make一个新的map
+sync.map
+go语言中的map在并发情况下 只读是线程安全的 同时读写是线程不安全的
+特性  无需初始化 直接声明即可
+sycn.Map不能使用map的方式进行取值和设置等操作 而是使用sync.Map 的方法进行调用
+Store表示存储 load 表示获取 Delete 表示删除
+使用Range配合一个回调函数进行遍历操作 通过回调函数返回内部遍历出来的值
+Range 参数中回调函数的返回值在需要继续迭代是 返回true 终止遍历时 返回 false
+在sync.Map 中 没有获取数量的方法  只能执行计算数量
+
+go语言 list
+在Go语言中，列表使用 container/list 包来实现，内部的实现原理是双链表，列表能够高效地进行任意位置的元素插入和删除操作。
+初始化链表  有两种方法 分别是使用New（）  和 var 关键字声明 两种方法的初始化效果都是一致的
+链表与切片 map 不同的是 列表没有具体元素类型的限制 因此列表的元素可以是任意类型
+的元素， 这即带来了便利 也引来了一些问题
+双向链表支持从队列的前方或后方插入元素 分别对应的方法是PushFront PushBack
+
+
+
+go语言中make 与 new 关键字的区别以及实现原理
+make关键字的主要作用是创建切片 哈希表 和 channel 等内置的数据结构 而new的主要作用是为
+类型申请一片内存空间 并返回指向这片内存的指针
+
+
 */
 import (
+	"container/list"
 	"fmt"
+	"sync"
 )
 
 func main() {
@@ -62,19 +89,42 @@ func main() {
 
 	var highRiseBuilding []int
 	for i := 0; i < 31; i++ {
-		highRiseBuilding[i] = i + 1
+		highRiseBuilding = append(highRiseBuilding, i+10)
 	}
 	fmt.Println(highRiseBuilding[10:15])
 	//重置切片 清空拥有的元素
 	fmt.Println(highRiseBuilding[0:0])
 	//声明新的切片
-
-	var mapname map[string]int
+	mapname := make(map[string]int)
 	mapname["1"] = 1
 	mapname["2"] = 2
 	for k, v := range mapname {
 		fmt.Printf("%d,%d\n", k, v)
 	}
 	//删除map中
+	delete(mapname, "1")
+	for k, v := range mapname {
+		fmt.Printf("%d,%d\n", k, v)
+	}
+	//清空map中的所有元素  无
+
+	//异步map
+	var syncmap sync.Map
+	//将键值对保存到sync.Map
+	syncmap.Store("green", 97)
+
+	var listname list.List
+	listname1 := list.New()
+	listname.PushBack("vvv")
+	listname1.PushBack("gagggg")
+	fmt.Println(listname1)
+	//遍历双向链表 需要配合Front（）函数获取头元素 遍历时 只要元素不为空就可以继续进行
+	//每一次遍历都会调用元素的Next()函数
+	for i := listname1.Front(); i != nil; i = i.Next() {
+		fmt.Println(i.Value)
+	}
+	for i := listname.Front(); i != nil; i = i.Next() {
+		fmt.Println(i.Value)
+	}
 
 }
