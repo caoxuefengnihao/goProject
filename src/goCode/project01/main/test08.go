@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /*
 使用关键字 type 可以将各种基本类型定义为自定义类型，基本类型包括整型、字符串、布尔等。结构体是一种复合的基本类型，通过 type 定义为自定义类型后，使结构体更便于使用。
 type 类型名 struct {
@@ -42,6 +44,12 @@ ins := 结构体类名{
 必须初始化结构体的所有字段
 每一个初始值的填充顺序必须与字段在结构体的声明顺序一致
 与键值对的形式不能够混用
+
+go语言的类型或结构体没有构造函数的功能
+但是我们可以使用结构体初始化的过程来模拟实现构造函数
+
+
+
 */
 func main() {
 	var p Point
@@ -61,6 +69,9 @@ func main() {
 	cmd.Comment = "show version"
 	cmd.Var = &version
 
+	cat := NewCatName("zhagnsan")
+	fmt.Println(cat.Name)
+
 }
 
 type Point struct {
@@ -78,4 +89,19 @@ type Command struct {
 	Name    string
 	Var     *int
 	Comment string
+}
+type Cat struct {
+	Color string
+	Name  string
+}
+
+func NewCatName(name string) *Cat {
+	return &Cat{
+		Name: name,
+	}
+}
+func NewCatColor(color string) *Cat {
+	return &Cat{
+		Color: color,
+	}
 }
