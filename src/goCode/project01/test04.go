@@ -1,4 +1,4 @@
-package main
+package project01
 
 /**
 go 语言数组
