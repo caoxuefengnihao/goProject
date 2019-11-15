@@ -30,6 +30,7 @@ Go语言中删除切片元素的本质是，以被删除元素为分界点，将
 go语言map
 声明方式
 var mapname map[keyType]valueType
+未初始化的 map 的值是 nil
 map 的删除和清空 delete（map，键）方法
 在go语言中并没有为map提供任何清空所有元素的函数方法 清空map的唯一办法就是
 重新make一个新的map

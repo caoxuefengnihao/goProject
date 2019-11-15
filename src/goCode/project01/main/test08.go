@@ -84,6 +84,14 @@ func main() {
 	Insert02(&b, 200)
 	fmt.Println(b)
 
+	b2 := Insert(b, 300)
+	fmt.Println(b2)
+	fmt.Println(&b, &b2)
+
+	var name map[int]string
+	name = map[int]string{1: "2"}
+	fmt.Println(name)
+
 }
 
 type Point struct {
@@ -139,8 +147,10 @@ type bag struct {
 适合使用指针接收器，在接收器和参数间传递时不进行复制，
 只是传递指针
 */
-func Insert(b bag, item int) {
-	b.item = append(b.item, item)
+func Insert(b bag, item int) bag {
+	return bag{
+		item: append(b.item, item),
+	}
 }
 func Insert02(b *bag, item int) {
 	b.item = append(b.item, item)
