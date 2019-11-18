@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"strings"
+)
 
 /*
 go语言的结构体
@@ -53,8 +59,27 @@ go语言的类型或结构体没有构造函数的功能
 
 结构体的方法  ---> 接收器
 接收器类型可以是任何类型 但是接收器不能是一个接口类型 也不能是指针类型
-
 类型T上的所有方法的集合 叫做类型T的方法集
+因为方法是函数，所以同样的，不允许方法重载，
+即对于一个类型只能有一个给定名称的方法，但是如果基于接收器类型，
+是有重载的：具有同样名字的方法可以在 2 个或多个不同的接收器类型上存在
+，比如在同一个包里这么做是允许的
+只是Go语言建立的“接收器”强调方法的作用对象是接收器，也就是类实例，而函数没有作用对象
+
+go语言可以为任何类型添加方法 给一种类型添加方法就好像给结构体添加方法一样 因为结构体也是一种类型
+
+为基本类型添加方法
+在go语言中 使用type关键字可以定义出新的自定义类型 之后就可以为自定义类型添加各种方法
+为HTTP添加方法
+go语言提供的HTTP包里也大量使用了类型方法 go语言使用HTTP包进行HTTP的请求
+使用HTTP包的NewRequest方法 可以创建一个HTTP请求 填充请求中的HTTP头 在调用 HTTP.client的Do方法
+将传入的HTTp请求发送出去
+time包中的类型方法
+go语言提供的time包主要用于时间的获取和计算等，在这个包中，也使用了类型方法
+
+go语言可以将类型的方法与普通的方法视为一个概念 从而简化方法和函数混为合作为回调类型时的复杂性
+调用者无需关心谁来支持调用 系统会自动处理是否调用普通函数或类型的方法
+
 
 
 */
@@ -91,6 +116,27 @@ func main() {
 	var name map[int]string
 	name = map[int]string{1: "2"}
 	fmt.Println(name)
+
+	var i MyInt
+	fmt.Println(i.IsZero())
+	i = 1
+	fmt.Println(i.IsZero())
+	fmt.Println(i.Add(5))
+
+	client := &http.Client{}
+	//创建一个HTTP请求
+	re, err := http.NewRequest("POST", "http://www.163.com", strings.NewReader("key=value"))
+	if err != nil {
+
+		fmt.Println(err)
+		os.Exit(1)
+		return
+	}
+	re.Header.Add("User-Agent", "myClient")
+	resq, err := client.Do(re)
+	data, _ := ioutil.ReadAll(resq.Body)
+	fmt.Println(string(data))
+	defer resq.Body.Close()
 
 }
 
@@ -157,4 +203,13 @@ func Insert02(b *bag, item int) {
 }
 func (b *bag) Insert01(item int) {
 	b.item = append(b.item, item)
+}
+
+type MyInt int
+
+func (m MyInt) IsZero() bool {
+	return m == 0
+}
+func (m MyInt) Add(order int) MyInt {
+	return MyInt(order + int(m))
 }
