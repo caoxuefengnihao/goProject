@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /*
 go 语言不是一种传统的面向对象编程语言 它里面没有类和集成的概念
 但是go语言里面有非常灵活的接口概念 通过他可以实现很多面向对象的特性
@@ -18,9 +20,50 @@ type 接口类型名字 interface{
 	方法2（参数列表2） 返回值列表2
 	......
 }
+
+如果一个任意类型 T 的方法集为一个接口类型的方法集的超集，则我们说类型 T 实现了此接口类型。T 可以是一个非接口类型，也可以是一个接口类型。
+
+实现关系在 Go语言中是隐式的。两个类型之间的实现关系不需要在代码中显式地表示出来。Go语言中没有类似于 implements 的关键字。 Go编译器将自动在需要的时候检查两个类型之间的实现关系。
+
+接口定义后，需要实现接口，调用方才能正确编译通过并使用接口。接口的实现需要遵循两条规则才能让接口可用。
+接口被实现的条件一：接口的方法与实现接口的类型方法格式一致
+接口被实现的条件二：接口中所有方法均被实现
+
+一个类型可以实现多个接口
+一个接口可以被多个类型实现
+
+
+
+
+
+
 */
-import "fmt"
-
 func main() {
+	s := &Socket{}
+	var w Writer
+	w = s
+	w.Write([]byte{1, 2, 3})
+}
 
+//类似于java中的ToString
+type Stringer interface {
+	String() string
+}
+
+type Socket struct {
+}
+
+func (s *Socket) Write(p []byte) (n int, err error) {
+	fmt.Println("Writer", p)
+	return 0, nil
+}
+func (s *Socket) Close() error {
+	return nil
+}
+
+type Writer interface {
+	Write(p []byte) (n int, err error)
+}
+type Closer interface {
+	Close() error
 }
