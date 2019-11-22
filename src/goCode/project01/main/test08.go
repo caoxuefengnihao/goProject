@@ -118,7 +118,7 @@ func main() {
 	b.item = append(b.item, 100)
 	Insert02(&b, 200)
 	fmt.Println(b)
-
+	b.Insert01(500)
 	b2 := Insert(b, 300)
 	fmt.Println(b2)
 	fmt.Println(&b, &b2)
