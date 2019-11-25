@@ -41,8 +41,40 @@ type 接口类型名字 interface{
 
 一个失败的断言的估值结果为断言类型的0值 看下面示例
 如果一个断言失败并且他的可选的第二个结果为呈现则此断言将造成一个恐慌
+go语言中使用接口断言将接口转换成另外一个接口 也可以将接口转换成另外的类型 接口的转换在开发中非常常见
+使用也非常频繁
 
-在fo语言中 接口与接口间也可以通过签到创造出新的接口
+将接口转换为其他接口此时可以在两个接口间转换
+例如 鸟和猪具有不同的特性 鸟可以飞 猪不能飞 但是两种动物都可以行走
+
+空接口是接口类型的特殊形式 空接口没有任何的方法 因此任何类型都无须实现空接口 从实现的角度看 任何值都满足这个接口的需求
+因此空接口类型可以保存任何值 也可以从空接口中取出原值
+空接口的内部实现保存了对象的类型和指针 使用空接口保存一个数据的过程会比直接用数据对应类型的变量
+保存稍慢 因此在开发中 应在需要的地方使用空接口 而不是在所有地方使用空接口
+
+go语言类型分支 type-switch 流程控制的语法可以被看作是类型断言的增强版
+格式
+switch 接口变量.(type) {
+    case 类型1:
+        // 变量是类型1时的处理
+    case 类型2:
+        // 变量是类型2时的处理
+    …
+    default:
+        // 变量不是所有case中列举的类型时的处理
+}
+
+
+
+接口与动态类型 因为go语言不像其他语言一样 实现接口要显示的声明 更加简便的多态实现
+接受一个或多个接口类型作为参数的函数  可以被实现了该接口的类型实例调用 实现了某个接口的类型可以被传给任何一次接口作为参数的流函数
+
+
+go语言排序（借助sort.interface接口）
+
+使用空接口实现可以保存任意值得字典
+
+在go语言中 接口与接口间也可以通过嵌套创造出新的接口
 
 一个接口可以包含一个或多个其他的接口 这相当于直接将这些内嵌的方法列举在外层接口中一样
 只要接口的所在方法被实现 则这个接口的所有嵌套接口的方法均可以被调用 代码示例如下
@@ -60,7 +92,27 @@ func main() {
 	fmt.Println(n, ok)
 	a, ok := x.(float64)
 	fmt.Println(a, ok) // 0 false
-	a = x.(float64)    // 将产生一个恐慌
+	//a = x.(float64)    // 将产生一个恐慌
+
+	//将值保存到空接口中
+	var any interface{}
+	any = 1
+	fmt.Println(any)
+	//从空接口获取值
+	var ao int = 1
+	var ii interface{} = ao
+	//var b int = ii 报错 cannot use i (type interface {}) as type int in assignment: need type assertion
+	/*
+		空接口类型类似于java中的object 断言就像强制类型转换
+	*/
+	var b int = ii.(int)
+	fmt.Println(b)
+	//空接口的值比较 空接口在保存不同的值后 可以喝其他变量值一样使用 == 进行比较操作 空接口的比较有一下几种特性
+	//1 类型不同的空接口间的比较结果不相同 2 不能比较空接口中的动态值
+
+	//go的动态接口
+	bi := &brid{}
+	DuckDance(bi)
 
 }
 
@@ -85,4 +137,41 @@ type Writer interface {
 }
 type Closer interface {
 	Close() error
+}
+
+//定义字典结构 键值对都是空接口类型
+type Dictionary struct {
+	data map[interface{}]interface{}
+}
+
+//根据键获取值
+func (d *Dictionary) Get(key interface{}) interface{} {
+	return d.data[key]
+}
+
+//设置键值对
+func (d *Dictionary) Set(key interface{}, value interface{}) {
+	d.data[key] = value
+}
+
+type IDuck interface {
+	Quack()
+	Walk()
+}
+
+func DuckDance(duck IDuck) {
+	for i := 1; i <= 3; i++ {
+		duck.Quack()
+		duck.Walk()
+	}
+}
+
+type brid struct {
+}
+
+func (b *brid) Quack() {
+	fmt.Println("I am quacking!")
+}
+func (b brid) Walk() {
+	fmt.Println("I am walking!")
 }
