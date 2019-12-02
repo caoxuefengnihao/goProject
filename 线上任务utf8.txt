@@ -1,0 +1,12 @@
+﻿1：statistic_location_image_count  图片统计  这个任务失败了 不用重新运行  每一次都是插入的最新数据
+任务路径 python /var/lib/hadoop-hdfs/scripts/statistic/hm3/statistic_location_image_count.py > /tmp/log/statistic_location_image_count.log
+2：apimini_cdn_log_download 任务一直失败 不用管它
+3：statistic_hm4_daily_count  这个报错了 也不用处理
+4：hm3小时任务清理步骤
+yarn jar /var/lib/hadoop-hdfs/codejar/flash_format.jar com.js.dataclean.hm3.plus.offline.Hm3_offline_Driver /data/hm3 /data/offline/hm3_output 2019-12-01-00 2019-12-01-00
+msck repair table hm3.hm3_format_log_tmp_caoxuefeng;
+set hive.execution.engine = mr;
+hadoop fs -rm -r /user/hive/warehouse/hm3.db/hm3_format_log_tmp_caoxuefeng/dt=2019-11-02/hour=19/msgtype=cli%25nt/action=mini
+hadoop fs -mv  /data/offline/hm3_output/* /user/hive/warehouse/hm3.db/hm3_format_log_tmp_caoxuefeng
+insert into table hm3.hm3_format_log_tmp_caoxuefeng02  partition(dt = '2019-12-01', hour, msgtype, action) select `(dt)?+.+` from hm3.hm3_format_log_tmp_caoxuefeng where dt = '2019-12-01';
+5：
