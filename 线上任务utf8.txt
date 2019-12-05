@@ -9,4 +9,5 @@ set hive.execution.engine = mr;
 hadoop fs -rm -r /user/hive/warehouse/hm3.db/hm3_format_log_tmp_caoxuefeng/dt=2019-11-02/hour=19/msgtype=cli%25nt/action=mini
 hadoop fs -mv  /data/offline/hm3_output/* /user/hive/warehouse/hm3.db/hm3_format_log_tmp_caoxuefeng
 insert into table hm3.hm3_format_log_tmp_caoxuefeng02  partition(dt = '2019-12-01', hour, msgtype, action) select `(dt)?+.+` from hm3.hm3_format_log_tmp_caoxuefeng where dt = '2019-12-01';
-5：
+5：hs_user_label_workflow_statistic   报错信息   workflow 来源 活跃统计分布 程序异常...
+  这个有自动重启的功能 看看重启后有没有成功 没有在解决
