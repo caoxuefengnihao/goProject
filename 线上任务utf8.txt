@@ -17,3 +17,7 @@ insert into table hm3.hm3_format_log_tmp_caoxuefeng  partition(dt,hour,msgtype,a
 
 5：hs_user_label_workflow_statistic   报错信息   workflow 来源 活跃统计分布 程序异常...
   这个有自动重启的功能 看看重启后有没有成功 没有在解决
+
+6：statistic_v4_search_combobox 不用管它
+
+7：middledata_clean 这个是用来清理 hdfs上的一些不必要的文件 错了不用管
